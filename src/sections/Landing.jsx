@@ -2,15 +2,19 @@ import { motion , AnimatePresence } from "framer-motion";
 import { useExperience } from "../context/ExperienceContext";
 import { useState, useEffect,} from "react";
 import BlockchainSpace from "../components/background/BlockchainSpace";
-
+import { useNavigate } from "react-router-dom";
 
 
 const name = "SYRAXX".split("");
 
-export default function Hero() {
+export default function Landing() {
   const { mode, setExperience } = useExperience();
   const [subtitleIndex, setSubtitleIndex] = useState(0);
-const [mouse, setMouse] = useState({ x: 0, y: 0 });
+  const [mouse, setMouse] = useState({ x: 0, y: 0 });
+  const [showEnter, setShowEnter] = useState(false);
+  const [discovered, setDiscovered] = useState(false);
+
+  const navigate = useNavigate();
 
   const subtitles = [
     "Frontend Developer",
@@ -23,9 +27,17 @@ const [mouse, setMouse] = useState({ x: 0, y: 0 });
     const interval = setInterval(() => {
       setSubtitleIndex((prev) => (prev + 1) % subtitles.length);
     }, 2200);
-
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+  const timer = setTimeout(() => {
+    setShowEnter(true);
+  }, 4500); // 4.5 seconds
+
+  return () => clearTimeout(timer);
+}, []);
+
 
   // Toggle hacker mode
   const handleSecretClick = () => {
@@ -67,7 +79,8 @@ const [mouse, setMouse] = useState({ x: 0, y: 0 });
            className={` text-7xl md:text-9xl font-extrabold cursor-pointer bg-clip-text text-transparent ${ mode === "hacker"
       ? "bg-gradient-to-br from-green-300 via-green-500 to-emerald-200 drop-shadow-[0_0_25px_rgba(0,255,120,0.6)]"
       : "bg-gradient-to-br from-[var(--primary)] via-[var(--accent)] to-white drop-shadow-[0_0_20px_rgba(150,150,255,0.35)]"
-         }`}
+         }
+`}
             onClick={() => index === 0 && handleSecretClick()}
           >
             {letter}
@@ -106,10 +119,67 @@ const [mouse, setMouse] = useState({ x: 0, y: 0 });
     );
   })}
 </div>
-      {/* Hidden hint (temporary) */}
-      <p className="absolute bottom-10 opacity-20 text-xs">
-        There are secrets here.
-      </p>
+ 
+ {/* ------------ navigator to system page */}
+
+ <AnimatePresence>
+  {discovered && (
+    <motion.div
+      initial={{ opacity: 0, y: 30, filter: "blur(6px)" }}
+      animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+      className="absolute bottom-24 flex flex-col items-center gap-2 cursor-pointer"
+      onClick={() => navigate("/system")}
+    >
+      {/* subtle portal line */}
+      <motion.div
+        animate={{ scaleX: [0.6, 1, 0.6], opacity: [0.3, 0.6, 0.3] }}
+        transition={{ duration: 2, repeat: Infinity }}
+        className={`
+          h-[1px] w-40
+          ${mode === "hacker" ? "bg-green-400" : "bg-white"}
+        `}
+      />
+
+      {/* portal text */}
+      <motion.span
+        animate={{ opacity: [0.4, 0.8, 0.4] }}
+        transition={{ duration: 2, repeat: Infinity }}
+        className="text-xs tracking-[0.4em] uppercase opacity-60"
+      >
+        Enter the system
+      </motion.span>
+    </motion.div>
+  )}
+</AnimatePresence>
+
+
+  {/* ------------- more secrets */}
+  <div
+  className="absolute bottom-10 flex items-center gap-3 cursor-pointer select-none"
+  onClick={() => setDiscovered(true)}
+>
+  {/* Pulsing signal */}
+  <motion.span
+    animate={{ opacity: [0.2, 0.6, 0.2], scale: [1, 1.3, 1] }}
+    transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+    className={`
+      w-2 h-2 rounded-full
+      ${mode === "hacker" ? "bg-green-400" : "bg-white"}
+    `}
+  />
+
+  {/* Discovery text */}
+  <motion.p
+    whileHover={{ opacity: 0.6 }}
+    className="text-xs tracking-widest opacity-30"
+  >
+    There are secrets here
+  </motion.p>
+</div>
+
+      
     </section>
   );
 }
