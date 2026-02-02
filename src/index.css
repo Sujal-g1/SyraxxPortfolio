@@ -29,3 +29,26 @@ html, body {
   padding: 0;
   overflow-x: hidden;
 }
+
+/* Custom Grid Pattern */
+.bg-grid {
+  background-size: 50px 50px;
+  background-image: 
+    linear-gradient(to right, rgba(var(--grid-color, 255, 255, 255), 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(var(--grid-color, 255, 255, 255), 0.05) 1px, transparent 1px);
+}
+
+/* Scanline Effect for "Shock" Factor */
+.scanlines {
+  background: linear-gradient(
+    to bottom,
+    transparent 50%,
+    rgba(0, 0, 0, 0.5) 51%
+  );
+  background-size: 100% 4px;
+}
+
+/* Define RGB version of primary for the radial glow */
+[data-mode="default"] { --primary-rgb: 124, 124, 255; --grid-color: 124, 124, 255; }
+[data-mode="hacker"] { --primary-rgb: 0, 255, 0; --grid-color: 0, 255, 0; }
+[data-mode="web3"] { --primary-rgb: 108, 242, 255; --grid-color: 108, 242, 255; }
