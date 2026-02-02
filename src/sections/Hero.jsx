@@ -46,25 +46,28 @@ const [mouse, setMouse] = useState({ x: 0, y: 0 });
 
 
   return (
-    <section className="h-screen flex flex-col items-center justify-center relative overflow-hidden select-none">
+    <section id="home" className="h-screen flex flex-col items-center justify-center relative overflow-hidden select-none">
 
         <BlockchainSpace mode={mode} />
 
       {/* Name Animation */}
-      <div className="flex mb-10">
+      <div className="flex mb-10 ">
         {name.map((letter, index) => (
           <motion.span
             key={index}
             initial={{ y: 80, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: index * 0.12, duration: 0.6 }}
+            transition={{ delay: index * 0.12, duration: 2 }}
             whileHover={{ 
             y: -20, 
             scale: 1.2,
              color: "var(--accent)", // Change color on hover
                 textShadow: "0px 0px 20px var(--primary)" 
             }}
-            className="text-7xl md:text-9xl font-extrabold text-[var(--primary)] cursor-pointer"
+           className={` text-7xl md:text-9xl font-extrabold cursor-pointer bg-clip-text text-transparent ${ mode === "hacker"
+      ? "bg-gradient-to-br from-green-300 via-green-500 to-emerald-200 drop-shadow-[0_0_25px_rgba(0,255,120,0.6)]"
+      : "bg-gradient-to-br from-[var(--primary)] via-[var(--accent)] to-white drop-shadow-[0_0_20px_rgba(150,150,255,0.35)]"
+         }`}
             onClick={() => index === 0 && handleSecretClick()}
           >
             {letter}
@@ -85,7 +88,6 @@ const [mouse, setMouse] = useState({ x: 0, y: 0 });
           y: distance * 40, 
           opacity: distance === 0 ? 1 : 0.3,
           scale: distance === 0 ? 1.1 : 0.85,
-          // Optional: slight blur for the "out of focus" look
           filter: distance === 0 ? "blur(0px)" : "blur(1px)",
         }}
         transition={{
