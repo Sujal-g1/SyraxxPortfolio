@@ -6,9 +6,6 @@ export default function HiddenNavbar() {
   const { mode } = useExperience();
   const [open, setOpen] = useState(false);
   const timerRef = useRef(null);
-  const pressTimer = useRef(null);
-  const pressStart = useRef({ x: 0, y: 0 });
-
 
   // Keyboard: Shift + Space
   useEffect(() => {
@@ -45,50 +42,28 @@ export default function HiddenNavbar() {
     }, 300);
   };
 
-  const handleGlobalPressStart = (e) => {
-  // record start position
-  pressStart.current = {
-    x: e.clientX ?? e.touches?.[0]?.clientX,
-    y: e.clientY ?? e.touches?.[0]?.clientY,
-  };
-
-  pressTimer.current = setTimeout(() => {
-    setOpen(true);
-  }, 900); // 0.9s feels right
-};
-
-const handleGlobalPressMove = (e) => {
-  const x = e.clientX ?? e.touches?.[0]?.clientX;
-  const y = e.clientY ?? e.touches?.[0]?.clientY;
-
-  if (!x || !y) return;
-
-  // cancel if user is scrolling / moving
-  if (
-    Math.abs(x - pressStart.current.x) > 10 ||
-    Math.abs(y - pressStart.current.y) > 10
-  ) {
-    clearTimeout(pressTimer.current);
-  }
-};
-
-const handleGlobalPressEnd = () => {
-  clearTimeout(pressTimer.current);
-};
-
-
-
   return (
     <>
-     {/* ===== Global Long-Press Gesture Layer ===== */}
-    <div className="fixed inset-0 z-20" onMouseDown={handleGlobalPressStart}
-    onMouseMove={handleGlobalPressMove}
-    onMouseUp={handleGlobalPressEnd}
-    onTouchStart={handleGlobalPressStart}
-    onTouchMove={handleGlobalPressMove}
-    onTouchEnd={handleGlobalPressEnd}
-    style={{ pointerEvents: open ? "none" : "auto" }}/>
-
+      {/* ===== Global System Trigger (Hero / Anywhere) ===== */}
+      <div
+        className="fixed bottom-6 right-6 z-30"
+        onMouseDown={startPress}
+        onMouseUp={endPress}
+        onClick={() => setOpen(true)}
+      >
+        <motion.div
+          whileHover={{ scale: 1.15, opacity: 0.35 }}
+          animate={{ opacity: 5 }}
+          transition={{ duration: 0.4 }}
+          className={`
+            w-10 h-10 rounded-full cursor-pointer
+            ${mode === "hacker"
+              ? "bg-green-400/30"
+              : "bg-[var(--primary)]/20"}
+            backdrop-blur-sm
+          `}
+        />
+      </div>
 
       {/* ===== System Overlay ===== */}
       <AnimatePresence>
